@@ -11,9 +11,12 @@
 //  Updated by Edon Valdman on 6/23/23.
 //
 
+#if canImport(UIKit) && canImport(MobileCoreServices)
 import UIKit
-import AVFoundation
 import MobileCoreServices
+#endif
+
+import AVFoundation
 import Photos
 
 class LivePhoto {
