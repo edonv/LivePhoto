@@ -466,7 +466,7 @@ fileprivate extension AVAsset {
         return CMTimeRange(start: time, duration: CMTime(value: frameDuration, timescale: time.timescale))
     }
     
-    func getAssetFrame(percent: Float) -> UIImage? {
+    func getAssetFrame(percent: Float) -> CGImage? {
         
         let imageGenerator = AVAssetImageGenerator(asset: self)
         imageGenerator.appliesPreferredTrackTransform = true
@@ -480,11 +480,7 @@ fileprivate extension AVAsset {
         
         do {
             var actualTime = CMTime.zero
-            let imageRef = try imageGenerator.copyCGImage(at: time, actualTime:&actualTime)
-            
-            let img = UIImage(cgImage: imageRef)
-            
-            return img
+            return try imageGenerator.copyCGImage(at: time, actualTime:&actualTime)
         } catch let error as NSError {
             print("Image generation failed with error \(error)")
             return nil
