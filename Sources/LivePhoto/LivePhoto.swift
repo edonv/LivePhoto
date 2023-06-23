@@ -76,9 +76,10 @@ class LivePhoto {
         if let stillImageTime = videoAsset.stillImageTime() {
             percent = Float(stillImageTime.value) / Float(videoAsset.duration.value)
         }
-        guard let imageFrame = videoAsset.getAssetFrame(percent: percent) else { return nil }
-        guard let jpegData = imageFrame.jpegData(compressionQuality: 1.0) else { return nil }
-        guard let url = cacheDirectory?.appendingPathComponent(UUID().uuidString).appendingPathExtension("jpg") else { return nil }
+        
+        guard let imageFrame = videoAsset.getAssetFrame(percent: percent),
+              let jpegData = imageFrame.jpegData(compressionQuality: 1.0),
+              let url = cacheDirectory?.appendingPathComponent(UUID().uuidString).appendingPathExtension("jpg") else { return nil }
         do {
             try? jpegData.write(to: url)
             return url
