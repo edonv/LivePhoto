@@ -487,6 +487,7 @@ fileprivate extension AVAsset {
         
         do {
             var actualTime = CMTime.zero
+            // TODO: replace copyCGImage with async (will be deprecated by next version)
             return try imageGenerator.copyCGImage(at: time, actualTime: &actualTime)
         } catch let error as NSError {
             print("Image generation failed with error \(error)")
