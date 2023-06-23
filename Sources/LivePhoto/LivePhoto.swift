@@ -19,9 +19,9 @@ import MobileCoreServices
 import AVFoundation
 import Photos
 
-class LivePhoto {
+public class LivePhoto {
     // MARK: PUBLIC
-    typealias LivePhotoResources = (pairedImage: URL, pairedVideo: URL)
+    public typealias LivePhotoResources = (pairedImage: URL, pairedVideo: URL)
     
     /// Returns the paired image and video for the given PHLivePhoto
     public class func extractResources(from livePhoto: PHLivePhoto, completion: @escaping (LivePhotoResources?) -> Void) {
