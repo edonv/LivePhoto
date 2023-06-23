@@ -8,6 +8,8 @@
 //  Created by Alexander Pagliaro on 7/25/18.
 //  Copyright © 2018 Limit Point LLC. All rights reserved.
 //
+//  Updated by Edon Valdman on 6/23/23.
+//
 
 import UIKit
 import AVFoundation
