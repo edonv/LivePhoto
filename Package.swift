@@ -7,7 +7,7 @@ let package = Package(
     name: "LivePhoto",
     platforms: [
         // Earlier versions are technically supported, but these are the earliest that support Swift Package Manager.
-        // Earliest support iOS 9.1+, macOS 10.15+, Mac Catalyst 13.1+, tvOS 10.0+
+        // Earliest support iOS 9.1+, macOS 10.15+, Mac Catalyst 13.1+, tvOS 10.0+ (not including async functions)
         .iOS(.v11),
         .macOS(.v10_15),
         .macCatalyst(.v13),
