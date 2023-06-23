@@ -17,12 +17,14 @@ import Photos
 class LivePhoto {
     // MARK: PUBLIC
     typealias LivePhotoResources = (pairedImage: URL, pairedVideo: URL)
+    
     /// Returns the paired image and video for the given PHLivePhoto
     public class func extractResources(from livePhoto: PHLivePhoto, completion: @escaping (LivePhotoResources?) -> Void) {
         queue.async {
             shared.extractResources(from: livePhoto, completion: completion)
         }
     }
+    
     /// Generates a PHLivePhoto from an image and video.
     ///
     /// Also returns the paired image and video.
@@ -31,6 +33,7 @@ class LivePhoto {
             shared.generate(from: imageURL, videoURL: videoURL, progress: progress, completion: completion)
         }
     }
+    
     /// Save a Live Photo to the Photo Library by passing the paired image and video.
     public class func saveToLibrary(_ resources: LivePhotoResources, completion: @escaping (Bool) -> Void) {
         PHPhotoLibrary.shared().performChanges({
@@ -49,6 +52,7 @@ class LivePhoto {
     // MARK: PRIVATE
     private static let shared = LivePhoto()
     private static let queue = DispatchQueue(label: "com.limit-point.LivePhotoQueue", attributes: .concurrent)
+    
     lazy private var cacheDirectory: URL? = {
         if let cacheDirectoryURL = try? FileManager.default.url(for: .cachesDirectory, in: .userDomainMask, appropriateFor: nil, create: false) {
             let fullDirectory = cacheDirectoryURL.appendingPathComponent("com.limit-point.LivePhoto", isDirectory: true)
@@ -448,8 +452,7 @@ fileprivate extension AVAsset {
         return CMTimeRange(start: time, duration: CMTime(value: frameDuration, timescale: time.timescale))
     }
     
-    func getAssetFrame(percent:Float) -> UIImage?
-    {
+    func getAssetFrame(percent:Float) -> UIImage? {
         
         let imageGenerator = AVAssetImageGenerator(asset: self)
         imageGenerator.appliesPreferredTrackTransform = true
@@ -468,9 +471,7 @@ fileprivate extension AVAsset {
             let img = UIImage(cgImage: imageRef)
             
             return img
-        }
-        catch let error as NSError
-        {
+        } catch let error as NSError {
             print("Image generation failed with error \(error)")
             return nil
         }
