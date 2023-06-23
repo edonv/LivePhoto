@@ -80,14 +80,8 @@ public class LivePhoto {
             percent = Float(stillImageTime.value) / Float(videoAsset.duration.value)
         }
         
-        guard let imageFrame = videoAsset.getAssetFrame(percent: percent) else { return nil }
-        #if canImport(UIKit)
-        let imageData = imageFrame.jpegData(compressionQuality: 1.0)
-        #else
-        let imageData = imageFrame.jpegData
-        #endif
-        
-        guard let imageData,
+        guard let imageFrame = videoAsset.getAssetFrame(percent: percent),
+              let imageData = imageFrame.jpegData,
               let url = cacheDirectory?.appendingPathComponent(UUID().uuidString).appendingPathExtension("jpg") else { return nil }
         
         try? imageData.write(to: url)
