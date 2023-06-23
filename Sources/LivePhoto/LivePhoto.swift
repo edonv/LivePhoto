@@ -215,16 +215,19 @@ class LivePhoto {
         do {
             // Create the Asset Writer
             assetWriter = try AVAssetWriter(outputURL: destinationURL, fileType: .mov)
+            
             // Create Video Reader Output
             videoReader = try AVAssetReader(asset: videoAsset)
             let videoReaderSettings = [kCVPixelBufferPixelFormatTypeKey as String: NSNumber(value: kCVPixelFormatType_32BGRA as UInt32)]
             let videoReaderOutput = AVAssetReaderTrackOutput(track: videoTrack, outputSettings: videoReaderSettings)
             videoReader?.add(videoReaderOutput)
+            
             // Create Video Writer Input
             let videoWriterInput = AVAssetWriterInput(mediaType: .video, outputSettings: [AVVideoCodecKey : AVVideoCodecType.h264, AVVideoWidthKey : videoTrack.naturalSize.width, AVVideoHeightKey : videoTrack.naturalSize.height])
             videoWriterInput.transform = videoTrack.preferredTransform
             videoWriterInput.expectsMediaDataInRealTime = true
             assetWriter?.add(videoWriterInput)
+            
             // Create Audio Reader Output & Writer Input
             if let audioTrack = videoAsset.tracks(withMediaType: .audio).first {
                 do {
@@ -241,21 +244,26 @@ class LivePhoto {
                     print(error)
                 }
             }
+            
             // Create necessary identifier metadata and still image time metadata
             let assetIdentifierMetadata = metadataForAssetID(assetIdentifier)
             let stillImageTimeMetadataAdapter = createMetadataAdaptorForStillImageTime()
             assetWriter?.metadata = [assetIdentifierMetadata]
             assetWriter?.add(stillImageTimeMetadataAdapter.assetWriterInput)
+            
             // Start the Asset Writer
             assetWriter?.startWriting()
             assetWriter?.startSession(atSourceTime: CMTime.zero)
+            
             // Add still image metadata
             let _stillImagePercent: Float = 0.5
             stillImageTimeMetadataAdapter.append(AVTimedMetadataGroup(items: [metadataItemForStillImageTime()],timeRange: videoAsset.makeStillImageTimeRange(percent: _stillImagePercent, inFrameCount: frameCount)))
+            
             // For end of writing / progress
             var writingVideoFinished = false
             var writingAudioFinished = false
             var currentFrameCount = 0
+            
             func didCompleteWriting() {
                 guard writingAudioFinished && writingVideoFinished else { return }
                 assetWriter?.finishWriting {
@@ -266,6 +274,7 @@ class LivePhoto {
                     }
                 }
             }
+            
             // Start writing video
             if videoReader?.startReading() ?? false {
                 videoWriterInput.requestMediaDataWhenReady(on: DispatchQueue(label: "videoWriterInputQueue")) {
@@ -289,6 +298,7 @@ class LivePhoto {
                 writingVideoFinished = true
                 didCompleteWriting()
             }
+            
             // Start writing audio
             if audioReader?.startReading() ?? false {
                 audioWriterInput?.requestMediaDataWhenReady(on: DispatchQueue(label: "audioWriterInputQueue")) {
