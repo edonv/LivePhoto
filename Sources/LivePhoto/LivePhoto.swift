@@ -494,3 +494,27 @@ fileprivate extension AVAsset {
         }
     }
 }
+
+extension LivePhoto {
+    /// Returns the paired image and video for the given PHLivePhoto
+    @available(iOS 13, macOS 10.15, macCatalyst 13, tvOS 13, *)
+    public class func extractResources(from livePhoto: PHLivePhoto) async -> LivePhotoResources? {
+        return await withCheckedContinuation { continuation in
+            LivePhoto.extractResources(from: livePhoto) { resources in
+                continuation.resume(returning: resources)
+            }
+        }
+    }
+    
+    /// Generates a PHLivePhoto from an image and video.
+    ///
+    /// Also returns the paired image and video.
+    @available(iOS 13, macOS 10.15, macCatalyst 13, tvOS 13, *)
+    public class func generate(from imageURL: URL?, videoURL: URL, progress: @escaping (CGFloat) -> Void) async -> (PHLivePhoto?, LivePhotoResources?) {
+        return await withCheckedContinuation { continuation in
+            LivePhoto.generate(from: imageURL, videoURL: videoURL, progress: progress) { livePhoto, resources  in
+                continuation.resume(returning: (livePhoto, resources))
+            }
+        }
+    }
+}
