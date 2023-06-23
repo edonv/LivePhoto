@@ -16,6 +16,10 @@ import UIKit
 import MobileCoreServices
 #endif
 
+#if canImport(AppKit)
+import AppKit
+#endif
+
 import AVFoundation
 import Photos
 
