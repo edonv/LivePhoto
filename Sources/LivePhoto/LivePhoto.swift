@@ -80,10 +80,9 @@ class LivePhoto {
         guard let imageFrame = videoAsset.getAssetFrame(percent: percent),
               let jpegData = imageFrame.jpegData(compressionQuality: 1.0),
               let url = cacheDirectory?.appendingPathComponent(UUID().uuidString).appendingPathExtension("jpg") else { return nil }
-        do {
-            try? jpegData.write(to: url)
-            return url
-        }
+        
+        try? jpegData.write(to: url)
+        return url
     }
     private func clearCache() {
         if let cacheDirectory = cacheDirectory {
