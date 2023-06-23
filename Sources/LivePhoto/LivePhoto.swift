@@ -99,7 +99,8 @@ class LivePhoto {
         }
         let assetIdentifier = UUID().uuidString
         let _keyPhotoURL = imageURL ?? generateKeyPhoto(from: videoURL)
-        guard let keyPhotoURL = _keyPhotoURL, let pairedImageURL = addAssetID(assetIdentifier, toImage: keyPhotoURL, saveTo: cacheDirectory.appendingPathComponent(assetIdentifier).appendingPathExtension("jpg")) else {
+        guard let keyPhotoURL = _keyPhotoURL,
+              let pairedImageURL = addAssetID(assetIdentifier, toImage: keyPhotoURL, saveTo: cacheDirectory.appendingPathComponent(assetIdentifier).appendingPathExtension("jpg")) else {
             DispatchQueue.main.async {
                 completion(nil, nil)
             }
@@ -149,7 +150,8 @@ class LivePhoto {
             }
         }
         group.notify(queue: DispatchQueue.main) {
-            guard let pairedPhotoURL = keyPhotoURL, let pairedVideoURL = videoURL else {
+            guard let pairedPhotoURL = keyPhotoURL,
+                  let pairedVideoURL = videoURL else {
                 completion(nil)
                 return
             }
