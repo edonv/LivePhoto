@@ -69,7 +69,7 @@ class LivePhoto {
             percent = Float(stillImageTime.value) / Float(videoAsset.duration.value)
         }
         guard let imageFrame = videoAsset.getAssetFrame(percent: percent) else { return nil }
-        guard let jpegData = UIImageJPEGRepresentation(imageFrame, 1.0) else { return nil }
+        guard let jpegData = imageFrame.jpegData(compressionQuality: 1.0) else { return nil }
         guard let url = cacheDirectory?.appendingPathComponent(UUID().uuidString).appendingPathExtension("jpg") else { return nil }
         do {
             try? jpegData.write(to: url)
@@ -211,7 +211,7 @@ class LivePhoto {
             let videoReaderOutput = AVAssetReaderTrackOutput(track: videoTrack, outputSettings: videoReaderSettings)
             videoReader?.add(videoReaderOutput)
             // Create Video Writer Input
-            let videoWriterInput = AVAssetWriterInput(mediaType: .video, outputSettings: [AVVideoCodecKey : AVVideoCodecH264, AVVideoWidthKey : videoTrack.naturalSize.width, AVVideoHeightKey : videoTrack.naturalSize.height])
+            let videoWriterInput = AVAssetWriterInput(mediaType: .video, outputSettings: [AVVideoCodecKey : AVVideoCodecType.h264, AVVideoWidthKey : videoTrack.naturalSize.width, AVVideoHeightKey : videoTrack.naturalSize.height])
             videoWriterInput.transform = videoTrack.preferredTransform
             videoWriterInput.expectsMediaDataInRealTime = true
             assetWriter?.add(videoWriterInput)
@@ -238,7 +238,7 @@ class LivePhoto {
             assetWriter?.add(stillImageTimeMetadataAdapter.assetWriterInput)
             // Start the Asset Writer
             assetWriter?.startWriting()
-            assetWriter?.startSession(atSourceTime: kCMTimeZero)
+            assetWriter?.startSession(atSourceTime: CMTime.zero)
             // Add still image metadata
             let _stillImagePercent: Float = 0.5
             stillImageTimeMetadataAdapter.append(AVTimedMetadataGroup(items: [metadataItemForStillImageTime()],timeRange: videoAsset.makeStillImageTimeRange(percent: _stillImagePercent, inFrameCount: frameCount)))
@@ -322,7 +322,7 @@ class LivePhoto {
             kCMMetadataFormatDescriptionMetadataSpecificationKey_DataType as NSString:
             "com.apple.metadata.datatype.int8"            ]
         var desc : CMFormatDescription? = nil
-        CMMetadataFormatDescriptionCreateWithMetadataSpecifications(kCFAllocatorDefault, kCMMetadataFormatType_Boxed, [spec] as CFArray, &desc)
+        CMMetadataFormatDescriptionCreateWithMetadataSpecifications(allocator: kCFAllocatorDefault, metadataType: kCMMetadataFormatType_Boxed, metadataSpecifications: [spec] as CFArray, formatDescriptionOut: &desc)
         let input = AVAssetWriterInput(mediaType: .metadata,
                                        outputSettings: nil, sourceFormatHint: desc)
         return AVAssetWriterInputMetadataAdaptor(assetWriterInput: input)
@@ -443,7 +443,7 @@ fileprivate extension AVAsset {
         
         //print("stillImageTime = \(CMTimeGetSeconds(time))")
         
-        return CMTimeRangeMake(time, CMTimeMake(frameDuration, time.timescale))
+        return CMTimeRange(start: time, duration: CMTime(value: frameDuration, timescale: time.timescale))
     }
     
     func getAssetFrame(percent:Float) -> UIImage?
@@ -452,15 +452,15 @@ fileprivate extension AVAsset {
         let imageGenerator = AVAssetImageGenerator(asset: self)
         imageGenerator.appliesPreferredTrackTransform = true
         
-        imageGenerator.requestedTimeToleranceAfter = CMTimeMake(1,100)
-        imageGenerator.requestedTimeToleranceBefore = CMTimeMake(1,100)
+        imageGenerator.requestedTimeToleranceAfter = CMTime(value: 1,timescale: 100)
+        imageGenerator.requestedTimeToleranceBefore = CMTime(value: 1,timescale: 100)
         
         var time = self.duration
         
         time.value = Int64(Float(time.value) * percent)
         
         do {
-            var actualTime = kCMTimeZero
+            var actualTime = CMTime.zero
             let imageRef = try imageGenerator.copyCGImage(at: time, actualTime:&actualTime)
             
             let img = UIImage(cgImage: imageRef)
