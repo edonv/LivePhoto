@@ -350,7 +350,7 @@ class LivePhoto {
 }
 
 fileprivate extension AVAsset {
-    func countFrames(exact:Bool) -> Int {
+    func countFrames(exact: Bool) -> Int {
         
         var frameCount = 0
         
@@ -435,7 +435,7 @@ fileprivate extension AVAsset {
         return stillTime
     }
     
-    func makeStillImageTimeRange(percent:Float, inFrameCount:Int = 0) -> CMTimeRange {
+    func makeStillImageTimeRange(percent: Float, inFrameCount: Int = 0) -> CMTimeRange {
         
         var time = self.duration
         
@@ -454,7 +454,7 @@ fileprivate extension AVAsset {
         return CMTimeRange(start: time, duration: CMTime(value: frameDuration, timescale: time.timescale))
     }
     
-    func getAssetFrame(percent:Float) -> UIImage? {
+    func getAssetFrame(percent: Float) -> UIImage? {
         
         let imageGenerator = AVAssetImageGenerator(asset: self)
         imageGenerator.appliesPreferredTrackTransform = true
