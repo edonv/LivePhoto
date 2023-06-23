@@ -471,8 +471,8 @@ fileprivate extension AVAsset {
         let imageGenerator = AVAssetImageGenerator(asset: self)
         imageGenerator.appliesPreferredTrackTransform = true
         
-        imageGenerator.requestedTimeToleranceAfter = CMTime(value: 1,timescale: 100)
-        imageGenerator.requestedTimeToleranceBefore = CMTime(value: 1,timescale: 100)
+        imageGenerator.requestedTimeToleranceAfter = CMTime(value: 1, timescale: 100)
+        imageGenerator.requestedTimeToleranceBefore = CMTime(value: 1, timescale: 100)
         
         var time = self.duration
         
